@@ -8,13 +8,12 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "importsNotUsedAsValues": "error"
   },
   "include": ["./src", "../../build/node_modules"]
