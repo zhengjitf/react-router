@@ -10,7 +10,9 @@ import {
   createMemoryRouter,
   useLocation,
 } from "react-router";
-import { prettyDOM, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+
+import getHtml from "../../react-router/__tests__/utils/getHtml";
 
 describe("<Navigate>", () => {
   describe("with an absolute href", () => {
@@ -564,7 +566,9 @@ describe("<Navigate>", () => {
       </div>"
     `);
   });
+});
 
+describe("concurrent mode (using React.startTransition for updates)", () => {
   it("handles setState in render in StrictMode using a data router (sync loader)", async () => {
     let renders: number[] = [];
     const router = createMemoryRouter([
@@ -639,9 +643,6 @@ describe("<Navigate>", () => {
           {
             index: true,
             Component() {
-              // When state managed by react and changes during render, we'll
-              // only "see" the value from the first pass through here in our
-              // effects
               let [count, setCount] = React.useState(0);
               React.useEffect(() => {
                 if (count === 0) {
@@ -684,11 +685,11 @@ describe("<Navigate>", () => {
           Page B
         </h1>
         <p>
-          0
+          1
         </p>
       </div>"
     `);
-    expect(navigateSpy).toHaveBeenCalledTimes(2);
+    expect(navigateSpy).toHaveBeenCalledTimes(3);
     expect(navigateSpy.mock.calls[0]).toMatchObject([
       { pathname: "/b" },
       { state: { count: 0 } },
@@ -697,7 +698,11 @@ describe("<Navigate>", () => {
       { pathname: "/b" },
       { state: { count: 0 } },
     ]);
-    expect(renders).toEqual([0, 0]);
+    expect(navigateSpy.mock.calls[2]).toMatchObject([
+      { pathname: "/b" },
+      { state: { count: 1 } },
+    ]);
+    expect(renders).toEqual([1, 1]);
   });
 
   it("handles setState in render in StrictMode using a data router (async loader)", async () => {
@@ -851,9 +856,3 @@ describe("<Navigate>", () => {
     expect(renders).toEqual([1, 1]);
   });
 });
-
-function getHtml(container: HTMLElement) {
-  return prettyDOM(container, undefined, {
-    highlight: false,
-  });
-}

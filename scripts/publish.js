@@ -40,12 +40,27 @@ async function ensureBuildVersion(packageName, version) {
  * @param {string} packageName
  * @param {string} tag
  */
-function publishBuild(packageName, tag) {
+function publishBuild(packageName, tag, releaseBranch) {
   let buildDir = path.join(rootDir, "packages", packageName);
+
+  let args = ["--access public"];
+  if (tag) {
+    args.push(`--tag ${tag}`);
+  }
+
+  if (tag === "experimental" || tag === "nightly") {
+    args.push("--no-git-checks");
+  } else if (releaseBranch) {
+    args.push(`--publish-branch ${releaseBranch}`);
+  } else {
+    throw new Error(
+      "Expected a release branch name to be provided for non-experimental/nightly releases"
+    );
+  }
   console.log();
-  console.log(`  npm publish ${buildDir} --tag ${tag} --access public`);
+  console.log(`  pnpm publish ${buildDir} --tag ${tag} --access public`);
   console.log();
-  execSync(`npm publish ${buildDir} --tag ${tag} --access public`, {
+  execSync(`pnpm publish ${buildDir} ${args.join(" ")}`, {
     stdio: "inherit",
   });
 }
@@ -69,32 +84,61 @@ async function run() {
     );
 
     // 2. Determine the appropriate npm tag to use
-    let tag = version.includes("experimental")
-      ? "experimental"
-      : semver.prerelease(version) == null
-      ? "latest"
-      : "pre";
+    let releaseBranch;
+    let tag;
+    if (version.includes("experimental")) {
+      tag = "experimental";
+    } else if (version.includes("nightly")) {
+      tag = "nightly";
+    } else if (version.startsWith("6.")) {
+      // !!! Note: publish.js is not used for prereleases and stable releases.
+      // We should be using the Changesets CI process for those.
+      // These code paths are only left here for emergency usages
+      releaseBranch = "release-v6";
+      tag = null;
+    } else if (version.startsWith("7.")) {
+      // !!! Note: publish.js is not used for prereleases and stable releases.
+      // We should be using the Changesets CI process for those.
+      // These code paths are only left here for emergency usages
+      releaseBranch = "release-next";
+      tag = semver.prerelease(version) == null ? "latest" : "pre";
+    }
 
     console.log();
     console.log(`  Publishing version ${version} to npm with tag "${tag}"`);
 
     // 3. Ensure build versions match the release version
-    if (version.includes("experimental")) {
-      // FIXME: @remix-run/router is versioned differently and is only handled
-      // for experimental releases here
-      await ensureBuildVersion("router", version);
-    }
     await ensureBuildVersion("react-router", version);
     await ensureBuildVersion("react-router-dom", version);
-    await ensureBuildVersion("react-router-dom-v5-compat", version);
-    await ensureBuildVersion("react-router-native", version);
+    await ensureBuildVersion("react-router-dev", version);
+    await ensureBuildVersion("react-router-express", version);
+    await ensureBuildVersion("react-router-node", version);
+    await ensureBuildVersion("react-router-serve", version);
+    await ensureBuildVersion("react-router-architect", version);
+    await ensureBuildVersion("react-router-cloudflare", version);
+    await ensureBuildVersion("react-router-fs-routes", version);
+    await ensureBuildVersion(
+      "react-router-remix-routes-option-adapter",
+      version
+    );
+    await ensureBuildVersion("create-react-router", version);
 
     // 4. Publish to npm
-    publishBuild("router", tag);
-    publishBuild("react-router", tag);
-    publishBuild("react-router-dom", tag);
-    publishBuild("react-router-dom-v5-compat", tag);
-    publishBuild("react-router-native", tag);
+    publishBuild("react-router", tag, releaseBranch);
+    publishBuild("react-router-dom", tag, releaseBranch);
+    publishBuild("react-router-dev", tag, releaseBranch);
+    publishBuild("react-router-express", tag, releaseBranch);
+    publishBuild("react-router-node", tag, releaseBranch);
+    publishBuild("react-router-serve", tag, releaseBranch);
+    publishBuild("react-router-architect", tag, releaseBranch);
+    publishBuild("react-router-cloudflare", tag, releaseBranch);
+    publishBuild("react-router-fs-routes", tag, releaseBranch);
+    publishBuild(
+      "react-router-remix-routes-option-adapter",
+      tag,
+      releaseBranch
+    );
+    publishBuild("create-react-router", tag, releaseBranch);
   } catch (error) {
     console.log();
     console.error(`  ${error.message}`);
