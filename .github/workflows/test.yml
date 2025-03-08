@@ -21,19 +21,31 @@ concurrency:
 
 jobs:
   test:
-    name: 🧪 Test
+    name: "🧪 Test: (Node: ${{ matrix.node }})"
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - 20
+          - 22
+
     runs-on: ubuntu-latest
 
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          cache: yarn
+          node-version: ${{ matrix.node }}
+          cache: pnpm
           check-latest: true
-          node-version-file: ".nvmrc"
+
+      - uses: google/wireit@setup-github-actions-caching/v2
 
       - name: Disable GitHub Actions Annotations
         run: |
@@ -42,16 +54,16 @@ jobs:
           echo "::remove-matcher owner=eslint-stylish::"
 
       - name: 📥 Install deps
-        run: yarn --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: 🏗 Build
-        run: yarn build
+        run: pnpm build
+
+      - name: 🔍 Typecheck
+        run: pnpm typecheck
 
       - name: 🔬 Lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: 🧪 Run tests
-        run: yarn test
-
-      - name: Check bundle size
-        run: yarn size
+        run: pnpm test
