@@ -291,6 +291,27 @@ export async function serverLoader({ params }) {
 }
 ```
 
+## Catch-all Route
+
+To create a route that will match any requests that don't match other defined routes (such as a 404 page), create a file named `$.tsx` within your routes directory:
+
+| URL                            | Matched Route           |
+| ------------------------------ | ----------------------- |
+| `/`                            | `app/routes/_index.tsx` |
+| `/about`                       | `app/routes/about.tsx`  |
+| `/any-invalid-path-will-match` | `app/routes/$.tsx`      |
+
+To have this route serve as a 404 page, be sure to modify the response code with a [`loader`](https://reactrouter.com/start/framework/data-loading#server-data-loading) function:
+
+```tsx
+import type { Route } from "./+types/$";
+export const loader = async ({
+  request,
+}: Route.LoaderArgs) => {
+  return data({}, 404);
+};
+```
+
 ## Escaping Special Characters
 
 If you want one of the special characters used for these route conventions to actually be a part of the URL, you can escape the conventions with `[]` characters. This can be especially helpful for [resource routes][resource_routes] that include an extension in the URL.
