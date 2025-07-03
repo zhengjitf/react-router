@@ -53,7 +53,7 @@ When the component is rendered, it is provided the props defined in `Route.Compo
 3. `params`: An object containing the route parameters (if any).
 4. `matches`: An array of all the matches in the current route tree.
 
-You can use these props in place of hooks like `useLoaderData` or `useParams`. This may be preferrable because they will be automatically typed correctly for the route.
+You can use these props in place of hooks like `useLoaderData` or `useParams`. This may be preferable because they will be automatically typed correctly for the route.
 
 ### Using props
 
@@ -372,6 +372,7 @@ The meta of the last matching route is used, allowing you to override parent rou
 **See also**
 
 - [`meta` params][meta-params]
+- [`meta` function return types][meta-function]
 
 ## `shouldRevalidate`
 
@@ -409,4 +410,5 @@ Next: [Rendering Strategies](./rendering)
 [link-element]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link
 [meta-element]: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 [meta-params]: https://api.reactrouter.com/v7/interfaces/react_router.MetaArgs
+[meta-function]: https://api.reactrouter.com/v7/types/react_router.MetaDescriptor.html
 [use-revalidator]: https://api.reactrouter.com/v7/functions/react_router.useRevalidator.html
