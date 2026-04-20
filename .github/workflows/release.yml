@@ -18,6 +18,7 @@ on:
     inputs:
       branch:
         required: true
+        description: Experimental release branch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
