@@ -19,6 +19,7 @@ import {
   TYPE_SYMBOL,
   TYPE_URL,
   type ThisDecode,
+  SUPPORTED_ERROR_TYPES,
 } from "./utils";
 
 const globalObj = (
@@ -182,8 +183,15 @@ function hydrate(this: ThisDecode, index: number): any {
             }
             continue;
           case TYPE_ERROR:
-            const [, message] = value;
-            let error = new Error(message);
+            const [, message, errorType] = value;
+            let error =
+              errorType &&
+              globalObj &&
+              SUPPORTED_ERROR_TYPES.includes(errorType) &&
+              errorType in globalObj &&
+              typeof globalObj[errorType] === "function"
+                ? new globalObj[errorType](message)
+                : new Error(message);
             hydrated[index] = error;
             set(error);
             continue;
