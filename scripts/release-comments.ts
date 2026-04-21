@@ -47,7 +47,7 @@ function findBoundingTags() {
       `-l ${PACKAGE_NAME}@*`,
       "--sort -creatordate",
       "--format %\\(refname:strip=2\\)",
-    ].join(" "),
+    ],
     true,
   );
   let stableGitTags = stdout
@@ -79,7 +79,7 @@ function getCommits(from: Tag, to: Tag): Array<string> {
       "--pretty=format:%H",
       `${from.raw}...${to.raw}`,
       DIRECTORY_TO_CHECK!,
-    ].join(" "),
+    ],
     true,
   );
 
@@ -99,21 +99,17 @@ async function commentOnPrAndLinkedIssues(pr: MergedPR, latest: Tag) {
     debug(`[dry-run] would comment on PR #${pr.number}`);
   } else {
     // Comment on PR
-    logAndExec(
-      ["gh", "pr", "comment", String(pr.number), "--body", prComment].join(" "),
-    );
+    logAndExec(["gh", "pr", "comment", String(pr.number), "--body", prComment]);
 
     // Remove PR labels
-    logAndExec(
-      [
-        "gh",
-        "pr",
-        "edit",
-        String(pr.number),
-        "--remove-label",
-        PR_LABELS_TO_REMOVE,
-      ].join(" "),
-    );
+    logAndExec([
+      "gh",
+      "pr",
+      "edit",
+      String(pr.number),
+      "--remove-label",
+      PR_LABELS_TO_REMOVE,
+    ]);
   }
 
   let promises = pr.issues.map((issue) => commentOnIssue(issue, latest));
@@ -153,15 +149,18 @@ async function commentOnIssue(issue: number, latest: Tag) {
     );
   } else {
     // Comment on linked issue
-    logAndExec(
-      ["gh", "issue", "comment", String(issue), "--body", issueComment].join(
-        " ",
-      ),
-    );
+    logAndExec([
+      "gh",
+      "issue",
+      "comment",
+      String(issue),
+      "--body",
+      issueComment,
+    ]);
 
     // Close linked issue
     if (shouldClose) {
-      logAndExec(["gh", "issue", "close", String(issue)].join(" "));
+      logAndExec(["gh", "issue", "close", String(issue)]);
     } else {
       debug(
         `Skipping close of issue #${issue} due to "${ISSUE_LABELS_TO_KEEP_OPEN}" label`,
@@ -169,16 +168,14 @@ async function commentOnIssue(issue: number, latest: Tag) {
     }
 
     // Remove labels from linked issue
-    logAndExec(
-      [
-        "gh",
-        "issue",
-        "edit",
-        String(issue),
-        "--remove-label",
-        ISSUE_LABELS_TO_REMOVE,
-      ].join(" "),
-    );
+    logAndExec([
+      "gh",
+      "issue",
+      "edit",
+      String(issue),
+      "--remove-label",
+      ISSUE_LABELS_TO_REMOVE,
+    ]);
   }
 }
 
@@ -233,7 +230,7 @@ async function findMergedPRs(
           "merged",
           "--json",
           "number,title,url,body",
-        ].join(" "),
+        ],
         true,
       );
 
@@ -302,7 +299,7 @@ function getIssuesLinkedToPullRequest(prHtmlUrl: string): Array<number> {
       "--paginate",
       `--field prHtmlUrl=${prHtmlUrl}`,
       `--raw-field query='${trimNewlines(query)}'`,
-    ].join(" "),
+    ],
     true,
   );
 
@@ -349,7 +346,7 @@ function getIssueLabels(number: string): Array<string> {
       `--field repo=${repo}`,
       `--field number=${number}`,
       `--raw-field query='${trimNewlines(query)}'`,
-    ].join(" "),
+    ],
     true,
   );
 
