@@ -71,16 +71,19 @@ async function comment() {
 ${STICKY_MARKER}
 ### Preview Build Available
 
-Preview builds have been created for this PR. You can install them using:
+Preview builds have been created for this PR. You can install \`react-router\` using:
 
 \`\`\`sh
-# Install react-router
 pnpm install "remix-run/react-router#${branch}&path:packages/react-router"
+\`\`\`
 
-# Install other packages as necessary
+And/or install other packages via:
+
+\`\`\`sh
+pnpm install "remix-run/react-router#${branch}&path:packages/react-router-dev"
+pnpm install "remix-run/react-router#${branch}&path:packages/react-router-express"
 pnpm install "remix-run/react-router#${branch}&path:packages/react-router-node"
 pnpm install "remix-run/react-router#${branch}&path:packages/react-router-serve"
-pnpm install "remix-run/react-router#${branch}&path:packages/react-router-dev"
 \`\`\`
 
 These preview builds will be updated automatically as you push new commits.`;
