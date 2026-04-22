@@ -13,8 +13,7 @@ concurrency:
 jobs:
   check:
     name: 📝 Change File Check
-    # TODO: Temporarily only run on my PRs for testing purposes
-    if: github.repository == 'remix-run/react-router' && github.event.pull_request.user.login == 'brophdawg11'
+    if: github.repository == 'remix-run/react-router'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
