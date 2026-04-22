@@ -23,23 +23,22 @@ const COMMENT_MARKER = "<!-- change-file-check -->";
 const COMMENT_FOUND = `${COMMENT_MARKER}
 ### ✅ Change File Found
 
-A \`.changes\` file has been found in this PR. Thanks!`;
+A [change file](https://github.com/remix-run/react-router/blob/main/docs/community/contributing.md#change-files) file exists in this PR. Thanks!`;
 
 const COMMENT_MISSING = `${COMMENT_MARKER}
-### 📝 No Change File Found
+### ⚠️ No Change File Found
 
-This PR doesn't include a change file which is used for automated release notes.
-If your change affects users, please add one (or more) and commit the generated file(s).
+This PR doesn't include a [change file](https://github.com/remix-run/react-router/blob/main/docs/community/contributing.md#change-files) which is used for automated release notes.
+If your change affects users, please add one (or more) change files and commit the generated file(s).
 
 \`\`\`sh
 pnpm run changes:add
 \`\`\`
 
-> This script requires Node 24+. If you are on a lower version, please [add a file manually](https://reactrouter.com/community/contributing#change-files)
+> This script requires Node 24+. If you are on a lower version, please [add a file manually](https://github.com/remix-run/react-router/blob/main/docs/community/contributing.md#change-files)
 
 > Not every PR needs a change file — you can skip this step if the change is internal-only
-> (tests, tooling, docs)\
-`;
+> (tests, tooling, docs)`;
 
 // Matches packages/*/.changes/*.md but not .gitkeep
 const CHANGE_FILE_RE = /^packages\/[^/]+\/\.changes\/[^/]+\.md$/;
